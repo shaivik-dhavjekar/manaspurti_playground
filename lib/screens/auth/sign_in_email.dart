@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:manaspurti_playground/application/firebase_auth.dart';
-import 'package:manaspurti_playground/screens/auth/register_account.dart';
-import 'package:manaspurti_playground/screens/welcome.dart';
 
 class SignInWithEmailScreen extends StatefulWidget {
   const SignInWithEmailScreen({super.key});
@@ -125,7 +123,7 @@ class _SignInWithEmailScreenState extends State<SignInWithEmailScreen> {
                           if (_formKey.currentState!.validate()) {
                             final isSignedIn = await _authService.signInWithEmailAndPassword(email: _emailController.text.toString(), password: _passwordController.text.toString());
                             if (isSignedIn) {
-                              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const WelcomeScreen()));
+                              Navigator.pushReplacementNamed(context, '/home');
                             }
                           }
                         },
@@ -144,9 +142,7 @@ class _SignInWithEmailScreenState extends State<SignInWithEmailScreen> {
                     ),
                     GestureDetector(
                       onTap: () =>
-                          // Navigator.pushNamed(context, '/forgot_password')
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => const EmailVerificationScreen()))
-                      ,
+                          Navigator.pushNamed(context, '/forgot_password'),
                       child: const Text('Forgot Password',
                         style: TextStyle(color: Color(0xFF909891)),),
                     ),

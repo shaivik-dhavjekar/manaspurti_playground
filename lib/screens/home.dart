@@ -1,8 +1,9 @@
-import 'package:firebase_ui_auth/firebase_ui_auth.dart';
+// import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:manaspurti_playground/screens/about.dart';
 import 'package:manaspurti_playground/screens/feedback.dart';
 import 'package:manaspurti_playground/screens/auth/register_account.dart';
+import 'package:manaspurti_playground/screens/profile.dart';
 import 'package:manaspurti_playground/screens/settings.dart';
 
 class Home extends StatefulWidget {

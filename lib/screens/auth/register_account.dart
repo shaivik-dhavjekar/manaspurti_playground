@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:manaspurti_playground/application/firebase_auth.dart';
-import 'package:manaspurti_playground/screens/welcome.dart';
-import 'package:provider/provider.dart';
 
 class RegisterAccountScreen extends StatefulWidget {
   const RegisterAccountScreen({super.key});
@@ -210,7 +208,7 @@ class EmailVerificationScreen extends StatelessWidget {
               if (user!.emailVerified) {
                 Future<void> navigateToNextPage() async {
                   await Future.delayed(const Duration(seconds: 3));
-                  Navigator.pushReplacementNamed(context, '/welcome');
+                  Navigator.pushReplacementNamed(context, '/home');
                 }
                 navigateToNextPage();
                 return Column(
