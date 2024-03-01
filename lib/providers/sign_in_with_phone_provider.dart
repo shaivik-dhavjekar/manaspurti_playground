@@ -26,6 +26,7 @@ class SignInWithPhoneProvider extends ChangeNotifier {
     _isLoading=true;
     notifyListeners();
     await _authService.verifyPhoneNumber(context, phoneNumber: phoneNumber);
+    return;
   }
 
   Future<void> signInWithOTP({required String otp}) async {
