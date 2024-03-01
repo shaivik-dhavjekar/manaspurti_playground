@@ -4,10 +4,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:manaspurti_playground/screens/home.dart';
+import 'package:manaspurti_playground/providers/forgot_password_provider.dart';
+import 'package:manaspurti_playground/providers/register_account_provider.dart';
+import 'package:manaspurti_playground/providers/sign_in_with_email_provider.dart';
+import 'package:manaspurti_playground/providers/sign_in_with_phone_provider.dart';
+import 'package:manaspurti_playground/screens/auth/forgot_password.dart';
+import 'package:manaspurti_playground/screens/home/home.dart';
 import 'package:manaspurti_playground/screens/auth/register_account.dart';
-import 'package:manaspurti_playground/screens/auth/sign_in_email.dart';
-import 'package:manaspurti_playground/screens/auth/sign_in_phone.dart';
+import 'package:manaspurti_playground/screens/auth/sign_in_with_email.dart';
+import 'package:manaspurti_playground/screens/auth/sign_in_with_phone.dart';
+import 'package:manaspurti_playground/screens/splash/splash.dart';
 import 'package:manaspurti_playground/screens/welcome.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
@@ -20,7 +26,10 @@ void main() async {
   runApp(
       MultiProvider(
           providers: [
-            ChangeNotifierProvider(create: (context) => SignInWithPhoneState()),
+            ChangeNotifierProvider(create: (context) => SignInWithPhoneProvider()),
+            ChangeNotifierProvider(create: (context) => SignInWithEmailProvider()),
+            ChangeNotifierProvider(create: (context) => RegisterAccountProvider()),
+            ChangeNotifierProvider(create: (context) => ForgotPasswordProvider()),
           ],
       child: const MyApp(),
       ),
@@ -55,15 +64,15 @@ class MyApp extends StatelessWidget {
         // ),
         useMaterial3: true,
       ),
-      home: const AuthScreen(),
+      home: const SplashScreen(),
       debugShowCheckedModeBanner: false,
       routes: {
         // '/': (context) => SplashScreen(),
-        '/sign_in_phone': (context) => const SignInWithPhoneScreen(),
-        '/sign_in_email': (context) => const SignInWithEmailScreen(),
+        '/sign_in_with_phone': (context) => const SignInWithPhoneScreen(),
+        '/sign_in_with_email': (context) => const SignInWithEmailScreen(),
         '/register_account': (context) => const RegisterAccountScreen(),
         '/email_verification': (context) => const EmailVerificationScreen(),
-        '/forgot_password': (context) => const EmailVerificationScreen(),
+        '/forgot_password': (context) => const ForgotPasswordScreen(),
         '/welcome': (context) => const WelcomeScreen(),
         '/home': (context) => const Home()
       },

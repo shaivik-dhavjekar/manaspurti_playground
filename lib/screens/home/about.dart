@@ -29,7 +29,7 @@ class AboutScreen extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.only(left: 10.0, right: 15),
                           child: Image.asset(
-                            'assets/getRideAbout.png',
+                            'assets/poker360Logo.png',
                             width: 25,
                           ),
                         ),
