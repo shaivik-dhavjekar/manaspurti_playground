@@ -116,7 +116,7 @@ class _RegisterAccountScreenState extends State<RegisterAccountScreen> {
                                     email: _emailController.text,
                                     password: _passwordController.text);
                                 if (provider.isRegistered) {
-                                  if (_nameController != null && _nameController.text.isNotEmpty) {
+                                  if (_nameController != null && _nameController.text.trim().isNotEmpty) {
                                     await provider.updateDisplayName(displayName: _nameController.text);
                                   }
                                   Navigator.pushReplacementNamed(context, '/email_verification');
@@ -125,7 +125,7 @@ class _RegisterAccountScreenState extends State<RegisterAccountScreen> {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
                                     content: Text('Please enter a valid password.'),
-                                    backgroundColor: Colors.red,
+                                    backgroundColor: Color(0xFFEFA39F),
                                   ),
                                 );
                               }
@@ -133,7 +133,7 @@ class _RegisterAccountScreenState extends State<RegisterAccountScreen> {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
                                   content: Text('Please enter a valid email.'),
-                                  backgroundColor: Colors.red,
+                                  backgroundColor: Color(0xFFEFA39F),
                                 ),
                               );
                             }

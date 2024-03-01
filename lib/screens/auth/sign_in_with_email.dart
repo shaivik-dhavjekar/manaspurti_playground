@@ -107,7 +107,7 @@ class _SignInWithEmailScreenState extends State<SignInWithEmailScreen> {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
                                     content: Text('Please enter a valid password.'),
-                                    backgroundColor: Colors.red,
+                                    backgroundColor: Color(0xFFEFA39F),
                                   ),
                                 );
                               }
@@ -115,7 +115,7 @@ class _SignInWithEmailScreenState extends State<SignInWithEmailScreen> {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
                                   content: Text('Please enter a valid email.'),
-                                  backgroundColor: Colors.red,
+                                  backgroundColor: Color(0xFFEFA39F),
                                 ),
                               );
                             }

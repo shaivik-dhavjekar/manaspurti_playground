@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:manaspurti_playground/providers/sign_in_with_phone_provider.dart';
 import 'package:manaspurti_playground/screens/loading_screen.dart';
+import 'package:manaspurti_playground/utils/validators.dart';
+import 'package:manaspurti_playground/widgets/auth_text_field.dart';
 import 'package:provider/provider.dart';
 
 class SignInWithPhoneScreen extends StatefulWidget {
@@ -56,19 +58,7 @@ class _SignInWithPhoneScreenState extends State<SignInWithPhoneScreen> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           if (!phoneState.isVerificationSent) ...[
-                            Container(
-                              width: MediaQuery.of(context).size.width * 0.93,
-                              decoration: BoxDecoration(
-                                  color: const Color(0xFFD0C8E2),
-                                  borderRadius: BorderRadius.circular(42)),
-                              child: TextFormField(
-                                controller: _phoneNumberController,
-                                decoration: const InputDecoration(
-                                    border: InputBorder.none,
-                                    labelText: 'Phone number',
-                                    prefixIcon: Icon(Icons.phone)),
-                              ),
-                            ),
+                            AuthTextField(textEditingController: _phoneNumberController, labelText: 'Phone number', prefixIcon: Icons.phone),
                             const SizedBox(
                               height: 35,
                             ),
@@ -78,8 +68,19 @@ class _SignInWithPhoneScreenState extends State<SignInWithPhoneScreen> {
                               child: ElevatedButton(
                                 onPressed: () async {
                                   FocusManager.instance.primaryFocus?.unfocus();
-                                  provider.sendVerificationCode(context,
-                                      phoneNumber: _phoneNumberController.text);
+                                  if (validPhone(
+                                      phoneController: _phoneNumberController)) {
+                                    await provider.sendVerificationCode(context,
+                                        phoneNumber: _phoneNumberController.text);
+                                  } else {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text('Please enter a valid phone number.'),
+                                        backgroundColor: Color(0xFFEFA39F),
+                                      ),
+                                    );
+                                  }
+
                                 },
                                 style: ElevatedButton.styleFrom(
                                   shape: RoundedRectangleBorder(
@@ -105,19 +106,7 @@ class _SignInWithPhoneScreenState extends State<SignInWithPhoneScreen> {
                             )
                           ],
                           if (phoneState.isVerificationSent) ...[
-                            Container(
-                              width: MediaQuery.of(context).size.width * 0.93,
-                              decoration: BoxDecoration(
-                                  color: const Color(0xFFD0C8E2),
-                                  borderRadius: BorderRadius.circular(42)),
-                              child: TextFormField(
-                                controller: _otpController,
-                                decoration: const InputDecoration(
-                                    border: InputBorder.none,
-                                    labelText: 'OTP',
-                                    prefixIcon: Icon(Icons.key)),
-                              ),
-                            ),
+                            AuthTextField(textEditingController: _otpController, labelText: 'OTP', prefixIcon: Icons.key),
                             const SizedBox(
                               height: 35,
                             ),
@@ -127,15 +116,26 @@ class _SignInWithPhoneScreenState extends State<SignInWithPhoneScreen> {
                               child: ElevatedButton(
                                 onPressed: () async {
                                   FocusManager.instance.primaryFocus?.unfocus();
-                                  provider.signInWithOTP(
-                                      otp: _otpController.text.toString());
-                                  if (provider.isVerified) {
-                                    Navigator.pushReplacement(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                const MobileNumberVerifiedScreen()));
+                                  if (validOTP(
+                                      otpController: _otpController)) {
+                                    await provider.signInWithOTP(
+                                        otp: _otpController.text.toString());
+                                    if (provider.isVerified) {
+                                      Navigator.pushReplacement(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                              const MobileNumberVerifiedScreen()));
+                                    }
+                                  } else {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text('Please enter a valid OTP.'),
+                                        backgroundColor: Color(0xFFEFA39F),
+                                      ),
+                                    );
                                   }
+
                                 },
                                 style: ElevatedButton.styleFrom(
                                   shape: RoundedRectangleBorder(
