@@ -127,10 +127,17 @@ class AuthService {
     return false;
   }
 
-  Future<void> signOutUser() async {
-    final User? firebaseUser = _firebaseAuth.currentUser;
-    if (firebaseUser != null) {
-      await _firebaseAuth.signOut();
+  Future<bool> signOutUser() async {
+    try {
+      final User? firebaseUser = _firebaseAuth.currentUser;
+      if (firebaseUser != null) {
+        await _firebaseAuth.signOut();
+        return true;
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+
     }
+    return false;
   }
 }

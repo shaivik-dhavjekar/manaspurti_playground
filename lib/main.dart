@@ -8,12 +8,13 @@ import 'package:manaspurti_playground/providers/forgot_password_provider.dart';
 import 'package:manaspurti_playground/providers/register_account_provider.dart';
 import 'package:manaspurti_playground/providers/sign_in_with_email_provider.dart';
 import 'package:manaspurti_playground/providers/sign_in_with_phone_provider.dart';
+import 'package:manaspurti_playground/providers/sign_out_provider.dart';
 import 'package:manaspurti_playground/screens/auth/forgot_password.dart';
 import 'package:manaspurti_playground/screens/home/home.dart';
 import 'package:manaspurti_playground/screens/auth/register_account.dart';
 import 'package:manaspurti_playground/screens/auth/sign_in_with_email.dart';
 import 'package:manaspurti_playground/screens/auth/sign_in_with_phone.dart';
-import 'package:manaspurti_playground/screens/splash/splash.dart';
+import 'package:manaspurti_playground/screens/splash.dart';
 import 'package:manaspurti_playground/screens/welcome.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
@@ -30,6 +31,7 @@ void main() async {
             ChangeNotifierProvider(create: (context) => SignInWithEmailProvider()),
             ChangeNotifierProvider(create: (context) => RegisterAccountProvider()),
             ChangeNotifierProvider(create: (context) => ForgotPasswordProvider()),
+            ChangeNotifierProvider(create: (context) => SignOutProvider()),
           ],
       child: const MyApp(),
       ),
