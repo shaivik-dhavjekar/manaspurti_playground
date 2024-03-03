@@ -74,14 +74,16 @@ class MyApp extends StatelessWidget {
         '/sign_in_with_email': (context) => const SignInWithEmailScreen(),
         '/register_account': (context) => const RegisterAccountScreen(),
         '/email_verification': (context) => const EmailVerificationScreen(),
+        '/email_verified': (context) => const EmailVerifiedScreen(),
         '/forgot_password': (context) => const ForgotPasswordScreen(),
         '/welcome': (context) => const WelcomeScreen(),
-        '/home': (context) => const Home()
+        '/home': (context) => const NavigatorScreen()
       },
     );
   }
 }
 
+/*
 class AuthScreen extends StatelessWidget {
   const AuthScreen({super.key});
 
@@ -105,6 +107,5 @@ class AuthScreen extends StatelessWidget {
       );
   }
 }
-
-
+*/
 
