@@ -5,7 +5,7 @@ class LoadingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
+    final MediaQueryData mediaQueryData = MediaQuery.of(context);
     return Stack(
       children: [
         Container(
@@ -17,8 +17,8 @@ class LoadingScreen extends StatelessWidget {
           child: IgnorePointer(
             ignoring: true,
             child: SizedBox(
-              width: screenWidth * 0.15,
-              height: screenWidth * 0.15,
+              width: mediaQueryData.orientation == Orientation.portrait ? mediaQueryData.size.width * 0.15 : mediaQueryData.size.height * 0.15,
+              height: mediaQueryData.orientation == Orientation.portrait ? mediaQueryData.size.width * 0.15 : mediaQueryData.size.height * 0.15,
               child: const CircularProgressIndicator(
                 strokeWidth: 8,
                 valueColor: AlwaysStoppedAnimation<Color>(Colors.black),

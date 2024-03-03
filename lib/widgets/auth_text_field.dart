@@ -16,27 +16,29 @@ class AuthTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final MediaQueryData mediaQueryData = MediaQuery.of(context);
     return Container(
-      width: MediaQuery.of(context).size.width * 0.93,
+      width: mediaQueryData.orientation == Orientation.portrait ? mediaQueryData.size.width * 0.93 : mediaQueryData.size.width * 0.5,
       decoration: BoxDecoration(
           color: const Color(0xFFD0C8E2),
           borderRadius: BorderRadius.circular(42)),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
         child: TextField(
-          controller: textEditingController,
-          style: const TextStyle(fontSize: 20, color: Color(0xFF313532)),
-          obscureText: obscureText,
-          obscuringCharacter: '*',
-          decoration: InputDecoration(
-              border: InputBorder.none,
-              labelText: labelText,
-              labelStyle: const TextStyle(fontSize: 20, color: Color(0xFF313532)),
-              isDense: true,
-              prefixIcon: Icon(prefixIcon, size: 24),
-              prefixIconColor: Colors.black)
+            controller: textEditingController,
+            style: const TextStyle(fontSize: 20, color: Color(0xFF313532)),
+            obscureText: obscureText,
+            obscuringCharacter: '*',
+            decoration: InputDecoration(
+                border: InputBorder.none,
+                labelText: labelText,
+                labelStyle: const TextStyle(fontSize: 20, color: Color(0xFF313532)),
+                isDense: true,
+                prefixIcon: Icon(prefixIcon, size: 24),
+                prefixIconColor: Colors.black)
         ),
       ),
     );
+
   }
 }
