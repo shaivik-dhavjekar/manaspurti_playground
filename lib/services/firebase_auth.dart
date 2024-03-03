@@ -18,6 +18,9 @@ class AuthService {
         email: email.trim(),
         password: password.trim(),
       );
+      if (userCredential.credential != null) {
+        await _firebaseAuth.signInWithCredential(userCredential.credential!);
+      }
       await userCredential.user!.sendEmailVerification();
       return true;
     } on FirebaseAuthException catch (e) {
