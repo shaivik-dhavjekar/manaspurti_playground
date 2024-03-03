@@ -31,16 +31,16 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               child: child,
             );
           },
-          pageBuilder: (context, animation, secondaryAnimation) => const Home(),
+          pageBuilder: (context, animation, secondaryAnimation) => const NavigatorScreen(),
         ),);
       });
     });
   }
 
   Future<void> fetchDisplayName() async {
-    displayName = await _authService.fetchUserDisplayName();
+    String? userName = await _authService.fetchUserDisplayName();
     setState(() {
-
+      displayName = userName;
     });
   }
 
@@ -57,7 +57,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               children: [
                 SizedBox(height: size.height*0.1),
                 Text(
-                  'Hi ${displayName ?? 'Unknown'}',
+                  'Hi, ${displayName ?? 'Unknown'}',
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                       fontSize: 24,
