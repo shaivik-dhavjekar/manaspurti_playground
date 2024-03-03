@@ -191,10 +191,10 @@ class AboutListTile extends StatelessWidget {
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(6),
                     color: const Color(0xFFEFEFEF),
-                    boxShadow: const [
+                    boxShadow: [
                       BoxShadow(
-                          color: Colors.grey,
-                          offset: Offset(0, 4),
+                          color: Colors.black.withOpacity(0.1),
+                          offset: const Offset(0, 4),
                           blurRadius: 4),
                     ]),
                 child: content,
