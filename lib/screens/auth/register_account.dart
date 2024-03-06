@@ -9,14 +9,119 @@ import 'package:manaspurti_playground/utils/validators.dart';
 import 'package:manaspurti_playground/widgets/auth_text_field.dart';
 import 'package:provider/provider.dart';
 
-class RegisterAccountScreen extends StatefulWidget {
+import '../../utils/get_scale_value.dart';
+import '../../widgets/auth_app_logo.dart';
+import '../../widgets/verified_screen.dart';
+
+class RegisterAccountScreen extends StatelessWidget {
   const RegisterAccountScreen({super.key});
 
   @override
-  State<RegisterAccountScreen> createState() => _RegisterAccountScreenState();
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SafeArea(
+        child: Center(
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              OrientationBuilder(builder: (context, orientation) {
+                if (orientation == Orientation.portrait) {
+                  return SingleChildScrollView(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        const AuthAppLogo(),
+                        const SizedBox(height: 40),
+                        SizedBox(
+                          width: double.infinity,
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              Text('Register Account',
+                                  style: GoogleFonts.roboto(
+                                      fontSize: 16 * getScaleValue(context),
+                                      fontWeight: FontWeight.w500)),
+                              Positioned(
+                                left: MediaQuery.of(context).size.width * 0.2,
+                                child: GestureDetector(
+                                  onTap: () => Navigator.pop(context),
+                                  child: const Icon(
+                                    Icons.arrow_back,
+                                    size: 25,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const RegisterAccountScreenForm()
+                      ],
+                    ),
+                  );
+                } else {
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const AuthAppLogo(),
+                      SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                Text('Register Account',
+                                    style: GoogleFonts.roboto(
+                                        fontSize: 16 * getScaleValue(context),
+                                        fontWeight: FontWeight.w500)),
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                      right: MediaQuery.of(context).size.width *
+                                          0.4),
+                                  child: GestureDetector(
+                                    onTap: () => Navigator.pop(context),
+                                    child: const Icon(
+                                      Icons.arrow_back,
+                                      size: 25,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const RegisterAccountScreenForm(),
+                          ],
+                        ),
+                      ),
+                    ],
+                  );
+                }
+              }),
+              Consumer<RegisterAccountProvider>(
+                builder: (context, provider, child) {
+                  if (provider.isLoading) {
+                    return const LoadingScreen();
+                  }
+                  return Container();
+                },
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }
 
-class _RegisterAccountScreenState extends State<RegisterAccountScreen> {
+class RegisterAccountScreenForm extends StatefulWidget {
+  const RegisterAccountScreenForm({super.key});
+
+  @override
+  State<RegisterAccountScreenForm> createState() =>
+      _RegisterAccountScreenFormState();
+}
+
+class _RegisterAccountScreenFormState extends State<RegisterAccountScreenForm> {
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -31,160 +136,109 @@ class _RegisterAccountScreenState extends State<RegisterAccountScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final MediaQueryData mediaQueryData = MediaQuery.of(context);
     final provider = Provider.of<RegisterAccountProvider>(context);
-    return Scaffold(
-      body: Center(
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Image.asset(
-                    'assets/poker360Logo.png',
-                    width: MediaQuery.of(context).size.width * 0.4,
-                    height: MediaQuery.of(context).size.width * 0.4,
-                  ),
-                  const SizedBox(height: 40),
-                  SizedBox(
-                    width: double.infinity,
-                    child: Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        Text('Register Account',
-                            style: GoogleFonts.roboto(
-                                fontSize: 16, fontWeight: FontWeight.w500)),
-                        Positioned(
-                          left: MediaQuery.of(context).size.width * 0.2,
-                          child: GestureDetector(
-                            onTap: () => Navigator.pop(context),
-                            child: const Icon(
-                              Icons.arrow_back,
-                              size: 25,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      AuthTextField(
-                          textEditingController: _nameController,
-                          labelText: 'Name',
-                          prefixIcon: Icons.person),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      AuthTextField(
-                          textEditingController: _emailController,
-                          labelText: 'Email',
-                          prefixIcon: Icons.email),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      AuthTextField(
-                          textEditingController: _passwordController,
-                          labelText: 'Password',
-                          prefixIcon: Icons.key,
-                          obscureText: true),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.83,
-                        height: 48,
-                        child: ElevatedButton(
-                          onPressed: () async {
-                            FocusManager.instance.primaryFocus?.unfocus();
-                            if (validEmail(emailController: _emailController)) {
-                              if (validPassword(
-                                  passwordController: _passwordController)) {
-                                await provider.signInWithEmailAndPassword(
-                                    email: _emailController.text,
-                                    password: _passwordController.text);
-                                if (provider.isRegistered) {
-                                  if (_nameController.text.trim().isNotEmpty) {
-                                    await provider.updateDisplayName(
-                                        displayName: _nameController.text);
-                                  }
-                                  Navigator.pushReplacementNamed(
-                                      context, '/email_verification');
-                                }
-                              } else {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content:
-                                        Text('Please enter a valid password.'),
-                                    backgroundColor: Color(0xFFEFA39F),
-                                  ),
-                                );
-                              }
-                            } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Please enter a valid email.'),
-                                  backgroundColor: Color(0xFFEFA39F),
-                                ),
-                              );
-                            }
-                          },
-                          style: ElevatedButton.styleFrom(
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(42)),
-                            backgroundColor: const Color(0xFF674FA3),
-                            foregroundColor: Colors.white,
-                          ),
-                          child: const Text('Register Account'),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 35,
-                      ),
-                      GestureDetector(
-                        onTap: () =>
-                            Navigator.pushNamed(context, '/forgot_password'),
-                        child: const Text(
-                          'Forgot Password',
-                          style: TextStyle(color: Color(0xFF909891)),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 35,
-                      ),
-                      GestureDetector(
-                        onTap: () => Navigator.pushNamedAndRemoveUntil(
-                            context,
-                            '/sign_in_with_phone',
-                            (Route<dynamic> route) => false),
-                        child: const Text(
-                          'Already a member? Sign in here.',
-                          style: TextStyle(color: Color(0xFF909891)),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            Consumer<RegisterAccountProvider>(
-              builder: (context, provider, child) {
-                if (provider.isLoading) {
-                  return const LoadingScreen();
-                }
-                return Container();
-              },
-            )
-          ],
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        const SizedBox(
+          height: 10,
         ),
-      ),
+        AuthTextField(
+            textEditingController: _nameController,
+            labelText: 'Name',
+            prefixIcon: Icons.person),
+        const SizedBox(
+          height: 20,
+        ),
+        AuthTextField(
+            textEditingController: _emailController,
+            labelText: 'Email',
+            prefixIcon: Icons.email),
+        const SizedBox(
+          height: 20,
+        ),
+        AuthTextField(
+            textEditingController: _passwordController,
+            labelText: 'Password',
+            prefixIcon: Icons.key,
+            obscureText: true),
+        const SizedBox(
+          height: 20,
+        ),
+        SizedBox(
+          width: mediaQueryData.orientation == Orientation.portrait
+              ? mediaQueryData.size.width * 0.83
+              : MediaQuery.of(context).size.width * 0.43,
+          height: 48,
+          child: ElevatedButton(
+            onPressed: () async {
+              FocusManager.instance.primaryFocus?.unfocus();
+              if (validEmail(emailController: _emailController)) {
+                if (validPassword(passwordController: _passwordController)) {
+                  await provider.signInWithEmailAndPassword(
+                      email: _emailController.text,
+                      password: _passwordController.text);
+                  if (provider.isRegistered) {
+                    if (_nameController.text.trim().isNotEmpty) {
+                      await provider.updateDisplayName(
+                          displayName: _nameController.text);
+                    }
+                    Navigator.pushReplacementNamed(
+                        context, '/email_verification');
+                  }
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Please enter a valid password.'),
+                      backgroundColor: Color(0xFFEFA39F),
+                    ),
+                  );
+                }
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Please enter a valid email.'),
+                    backgroundColor: Color(0xFFEFA39F),
+                  ),
+                );
+              }
+            },
+            style: ElevatedButton.styleFrom(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(42)),
+              backgroundColor: const Color(0xFF674FA3),
+              foregroundColor: Colors.white,
+            ),
+            child: Text(
+              'Register Account',
+              style: TextStyle(fontSize: 16 * getScaleValue(context), fontWeight: FontWeight.bold),
+            ),
+          ),
+        ),
+        const SizedBox(
+          height: 25,
+        ),
+        GestureDetector(
+          onTap: () => Navigator.pushNamed(context, '/forgot_password'),
+          child: Text(
+            'Forgot Password',
+            style: TextStyle(color: Color(0xFF909891), fontSize: 14 * getScaleValue(context)),
+          ),
+        ),
+        const SizedBox(
+          height: 25,
+        ),
+        GestureDetector(
+          onTap: () => Navigator.pushNamedAndRemoveUntil(
+              context, '/sign_in_with_phone', (Route<dynamic> route) => false),
+          child: Text(
+            'Already a member? Sign in here.',
+            style: TextStyle(color: Color(0xFF909891), fontSize: 14 * getScaleValue(context)),
+          ),
+        ),
+      ],
     );
   }
 }
@@ -208,8 +262,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
       final user = FirebaseAuth.instance.currentUser;
       if (user?.emailVerified ?? false) {
         timer.cancel();
-        Navigator.pushReplacementNamed(
-            context, '/email_verified');
+        Navigator.pushReplacementNamed(context, '/email_verified');
       }
     });
   }
@@ -222,38 +275,23 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(
-              'Email registered successfully',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                  fontSize: MediaQuery.of(context).size.width * 0.11,
-                  color: const Color(0xFF6A736B)),
-            ),
-            const SizedBox(height: 30),
-            Icon(Icons.mark_email_unread,
-                size: MediaQuery.of(context).size.width * 0.25),
-            const SizedBox(height: 30),
-            const Text(
-              'We have sent a verification link to the registered email address.',
-              textAlign: TextAlign.center,
-              style: TextStyle(color: Color(0xFF6A736B)),
-            ),
-            const SizedBox(height: 20),
-            const Text(
-              'Please verify email to continue.',
-              textAlign: TextAlign.center,
-              style: (TextStyle(color: Color(0xFF6A736B))),
-            ),
-          ],
+    return const VerifiedScreen(title: 'Email registered successfully', icon: Icons.mark_email_unread, extraContent: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Text(
+          'We have sent a verification link to the registered email address.',
+          textAlign: TextAlign.center,
+          style: TextStyle(color: Color(0xFF6A736B)),
         ),
-      ),
-    );
+        SizedBox(height: 20),
+        Text(
+          'Please verify email to continue.',
+          textAlign: TextAlign.center,
+          style: (TextStyle(color: Color(0xFF6A736B))),
+        ),
+      ],
+    ),);
   }
 }
 
@@ -262,11 +300,10 @@ class EmailVerifiedScreen extends StatefulWidget {
 
   @override
   State<EmailVerifiedScreen> createState() =>
-      _MobileNumberVerifiedScreenState();
+      _EmailVerifiedScreenState();
 }
 
-class _MobileNumberVerifiedScreenState
-    extends State<EmailVerifiedScreen> {
+class _EmailVerifiedScreenState extends State<EmailVerifiedScreen> {
   @override
   void initState() {
     super.initState();
@@ -279,26 +316,7 @@ class _MobileNumberVerifiedScreenState
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(
-              'Email verified successfully',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                  fontSize: MediaQuery.of(context).size.width * 0.11,
-                  color: const Color(0xFF6A736B)),
-            ),
-            const SizedBox(height: 30),
-            Icon(Icons.mark_email_read,
-                size: MediaQuery.of(context).size.width * 0.25),
-          ],
-        )
-      ),
-    );
+    return const VerifiedScreen(title: 'Email verified successfully', icon: Icons.mark_email_read);
   }
 }
 

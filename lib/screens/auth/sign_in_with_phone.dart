@@ -4,10 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:manaspurti_playground/providers/sign_in_with_phone_provider.dart';
 import 'package:manaspurti_playground/screens/loading_screen.dart';
+import 'package:manaspurti_playground/utils/get_scale_value.dart';
 import 'package:manaspurti_playground/utils/validators.dart';
 import 'package:manaspurti_playground/widgets/auth_app_logo.dart';
 import 'package:manaspurti_playground/widgets/auth_text_field.dart';
 import 'package:provider/provider.dart';
+
+import '../../widgets/verified_screen.dart';
 
 class SignInWithPhoneScreen extends StatelessWidget {
   const SignInWithPhoneScreen({super.key});
@@ -15,41 +18,43 @@ class SignInWithPhoneScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            OrientationBuilder(
-                builder: (context, orientation) {
-                  return SingleChildScrollView(
-                    child: orientation == Orientation.portrait ? const Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        AuthAppLogo(),
-                        SizedBox(height: 40),
-                        SignInWithPhoneScreenForm()
-                      ],
-                    ) : const Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        AuthAppLogo(),
-                        SignInWithPhoneScreenForm(),
-                      ],
-                    ),
-                  );
-                }
-            ),
-            Consumer<SignInWithPhoneProvider>(
-              builder: (context, provider, child) {
-                if (provider.isLoading) {
-                  return const LoadingScreen();
-                }
-                return Container();
-              },
-            )
-          ],
+      body: SafeArea(
+        child: Center(
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              OrientationBuilder(
+                  builder: (context, orientation) {
+                    return SingleChildScrollView(
+                      child: orientation == Orientation.portrait ? const Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          AuthAppLogo(),
+                          SizedBox(height: 40),
+                          SignInWithPhoneScreenForm()
+                        ],
+                      ) : const Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          AuthAppLogo(),
+                          SignInWithPhoneScreenForm(),
+                        ],
+                      ),
+                    );
+                  }
+              ),
+              Consumer<SignInWithPhoneProvider>(
+                builder: (context, provider, child) {
+                  if (provider.isLoading) {
+                    return const LoadingScreen();
+                  }
+                  return Container();
+                },
+              )
+            ],
+          ),
         ),
       ),
     );
@@ -84,7 +89,7 @@ class _SignInWithPhoneScreenFormState extends State<SignInWithPhoneScreenForm> {
       children: [
         Text('Sign in with phone',
             style: GoogleFonts.roboto(
-                fontSize: 16, fontWeight: FontWeight.w500)),
+                fontSize: 16 * getScaleValue(context), fontWeight: FontWeight.w500)),
         const SizedBox(
           height: 10,
         ),
@@ -117,7 +122,6 @@ class _SignInWithPhoneScreenFormState extends State<SignInWithPhoneScreenForm> {
                             ),
                           );
                         }
-
                       },
                       style: ElevatedButton.styleFrom(
                         shape: RoundedRectangleBorder(
@@ -125,7 +129,7 @@ class _SignInWithPhoneScreenFormState extends State<SignInWithPhoneScreenForm> {
                         backgroundColor: const Color(0xFF674FA3),
                         foregroundColor: Colors.white,
                       ),
-                      child: const Text('Request OTP'),
+                      child: Text('Request OTP', style: TextStyle(fontSize: 16 * getScaleValue(context), fontWeight: FontWeight.bold),),
                     ),
                   ),
                   const SizedBox(
@@ -136,9 +140,9 @@ class _SignInWithPhoneScreenFormState extends State<SignInWithPhoneScreenForm> {
                       Navigator.pushNamed(
                           context, '/sign_in_with_email');
                     },
-                    child: const Text(
+                    child: Text(
                       'Don’t have a phone? Use email instead.',
-                      style: TextStyle(color: Color(0xFF909891)),
+                      style: TextStyle(color: Color(0xFF909891), fontSize: 14 * getScaleValue(context)),
                     ),
                   )
                 ],
@@ -180,7 +184,7 @@ class _SignInWithPhoneScreenFormState extends State<SignInWithPhoneScreenForm> {
                         backgroundColor: const Color(0xFF674FA3),
                         foregroundColor: Colors.white,
                       ),
-                      child: const Text('Verify OTP'),
+                      child: Text('Verify OTP', style: TextStyle(fontSize: 16 * getScaleValue(context), fontWeight: FontWeight.bold),),
                     ),
                   ),
                   const SizedBox(
@@ -190,9 +194,9 @@ class _SignInWithPhoneScreenFormState extends State<SignInWithPhoneScreenForm> {
                     onTap: () {
                       phoneState.cancelOTPVerification();
                     },
-                    child: const Text(
+                    child: Text(
                       'Cancel',
-                      style: TextStyle(color: Color(0xFF909891)),
+                      style: TextStyle(color: Color(0xFF909891), fontSize: 14 * getScaleValue(context)),
                     ),
                   )
                 ],
@@ -227,25 +231,6 @@ class _MobileNumberVerifiedScreenState
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(
-              'Mobile number verified',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                  fontSize: MediaQuery.of(context).size.width * 0.11,
-                  color: const Color(0xFF6A736B)),
-            ),
-            const SizedBox(height: 25),
-            Icon(Icons.mobile_friendly,
-                size: MediaQuery.of(context).size.width * 0.25),
-          ],
-        ),
-      ),
-    );
+    return const VerifiedScreen(title: 'Mobile number verified', icon: Icons.mobile_friendly);
   }
 }

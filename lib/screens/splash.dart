@@ -61,7 +61,7 @@ class _SplashScreenState extends State<SplashScreen>
                     builder: (context, child) {
                       return Container(
                         alignment: Alignment.center,
-                        width: size.width*0.5,
+                        width:  size.width > size.height ? size.height*0.5 : size.width*0.5,
                         height: size.width*0.5,
                         child: Image.asset('assets/poker360Logo.png',
                             width: _animation.value * size.width*0.5,

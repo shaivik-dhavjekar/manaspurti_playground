@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:manaspurti_playground/providers/sign_in_with_email_provider.dart';
 import 'package:manaspurti_playground/screens/loading_screen.dart';
+import 'package:manaspurti_playground/utils/get_scale_value.dart';
 import 'package:manaspurti_playground/utils/validators.dart';
 import 'package:manaspurti_playground/widgets/auth_app_logo.dart';
 import 'package:manaspurti_playground/widgets/auth_text_field.dart';
@@ -13,29 +14,65 @@ class SignInWithEmailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            OrientationBuilder(
-                builder: (context, orientation) {
-                  return SingleChildScrollView(
-                    child: orientation == Orientation.portrait ? Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        const AuthAppLogo(),
-                        const SizedBox(height: 40),
-                        SizedBox(
-                          width: double.infinity,
-                          child: Stack(
+      body: SafeArea(
+        child: Center(
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              OrientationBuilder(builder: (context, orientation) {
+                return SingleChildScrollView(
+                  child: orientation == Orientation.portrait
+                      ? Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const AuthAppLogo(),
+                      const SizedBox(height: 40),
+                      SizedBox(
+                        width: double.infinity,
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            Text('Sign in with email',
+                                style: GoogleFonts.roboto(
+                                    fontSize: 16 * getScaleValue(context),
+                                    fontWeight: FontWeight.w500)),
+                            Positioned(
+                              left: MediaQuery.of(context).size.width * 0.2,
+                              child: GestureDetector(
+                                onTap: () => Navigator.pop(context),
+                                child: const Icon(
+                                  Icons.arrow_back,
+                                  size: 25,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SignInWithEmailScreenForm()
+                    ],
+                  )
+                      : Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const AuthAppLogo(),
+                      Column(
+                        children: [
+                          Stack(
                             alignment: Alignment.center,
                             children: [
                               Text('Sign in with email',
                                   style: GoogleFonts.roboto(
-                                      fontSize: 16, fontWeight: FontWeight.w500)),
-                              Positioned(
-                                left: MediaQuery.of(context).size.width * 0.2,
+                                      fontSize: 16 * getScaleValue(context),
+                                      fontWeight: FontWeight.w500)),
+                              Padding(
+                                padding: EdgeInsets.only(
+                                    right: MediaQuery.of(context)
+                                        .size
+                                        .width *
+                                        0.4),
                                 child: GestureDetector(
                                   onTap: () => Navigator.pop(context),
                                   child: const Icon(
@@ -46,32 +83,23 @@ class SignInWithEmailScreen extends StatelessWidget {
                               ),
                             ],
                           ),
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        SignInWithEmailScreenForm()
-                      ],
-                    ) : const Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        AuthAppLogo(),
-                        SignInWithEmailScreenForm(),
-                      ],
-                    ),
-                  );
-                }
-            ),
-            Consumer<SignInWithEmailProvider>(
-              builder: (context, provider, child) {
-                if (provider.isLoading) {
-                  return const LoadingScreen();
-                }
-                return Container();
-              },
-            )
-          ],
+                          const SignInWithEmailScreenForm(),
+                        ],
+                      ),
+                    ],
+                  ),
+                );
+              }),
+              Consumer<SignInWithEmailProvider>(
+                builder: (context, provider, child) {
+                  if (provider.isLoading) {
+                    return const LoadingScreen();
+                  }
+                  return Container();
+                },
+              )
+            ],
+          ),
         ),
       ),
     );
@@ -82,7 +110,8 @@ class SignInWithEmailScreenForm extends StatefulWidget {
   const SignInWithEmailScreenForm({super.key});
 
   @override
-  State<SignInWithEmailScreenForm> createState() => _SignInWithEmailScreenFormState();
+  State<SignInWithEmailScreenForm> createState() =>
+      _SignInWithEmailScreenFormState();
 }
 
 class _SignInWithEmailScreenFormState extends State<SignInWithEmailScreenForm> {
@@ -104,6 +133,9 @@ class _SignInWithEmailScreenFormState extends State<SignInWithEmailScreenForm> {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
+        const SizedBox(
+          height: 10,
+        ),
         AuthTextField(
             textEditingController: _emailController,
             labelText: 'Email',
@@ -120,14 +152,15 @@ class _SignInWithEmailScreenFormState extends State<SignInWithEmailScreenForm> {
           height: 20,
         ),
         SizedBox(
-          width: mediaQueryData.orientation == Orientation.portrait ? mediaQueryData.size.width * 0.83 : MediaQuery.of(context).size.width * 0.43,
+          width: mediaQueryData.orientation == Orientation.portrait
+              ? mediaQueryData.size.width * 0.83
+              : MediaQuery.of(context).size.width * 0.43,
           height: 48,
           child: ElevatedButton(
             onPressed: () async {
               FocusManager.instance.primaryFocus?.unfocus();
               if (validEmail(emailController: _emailController)) {
-                if (validPassword(
-                    passwordController: _passwordController)) {
+                if (validPassword(passwordController: _passwordController)) {
                   await provider.signInWithEmailAndPassword(
                       email: _emailController.text,
                       password: _passwordController.text);
@@ -158,29 +191,31 @@ class _SignInWithEmailScreenFormState extends State<SignInWithEmailScreenForm> {
               backgroundColor: const Color(0xFF674FA3),
               foregroundColor: Colors.white,
             ),
-            child: const Text('Sign in'),
+            child: Text('Sign in', style: TextStyle(fontSize: 16 * getScaleValue(context), fontWeight: FontWeight.bold),),
           ),
         ),
         const SizedBox(
-          height: 35,
+          height: 25,
         ),
         GestureDetector(
-          onTap: () =>
-              Navigator.pushNamed(context, '/forgot_password'),
-          child: const Text(
+          onTap: () => Navigator.pushNamed(context, '/forgot_password'),
+          child: Text(
             'Forgot Password',
-            style: TextStyle(color: Color(0xFF909891)),
+            style: TextStyle(
+                color: Color(0xFF909891),
+                fontSize: 14 * getScaleValue(context)),
           ),
         ),
         const SizedBox(
-          height: 35,
+          height: 20,
         ),
         GestureDetector(
-          onTap: () =>
-              Navigator.pushNamed(context, '/register_account'),
-          child: const Text(
+          onTap: () => Navigator.pushNamed(context, '/register_account'),
+          child: Text(
             'Don’t have an account? Register here.',
-            style: TextStyle(color: Color(0xFF909891)),
+            style: TextStyle(
+                color: Color(0xFF909891),
+                fontSize: 14 * getScaleValue(context)),
           ),
         ),
       ],
