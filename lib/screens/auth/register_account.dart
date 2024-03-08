@@ -3,15 +3,16 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:manaspurti_playground/providers/register_account_provider.dart';
-import 'package:manaspurti_playground/screens/loading_screen.dart';
-import 'package:manaspurti_playground/utils/validators.dart';
-import 'package:manaspurti_playground/widgets/auth_text_field.dart';
 import 'package:provider/provider.dart';
 
+import '../../providers/register_account_provider.dart';
 import '../../utils/get_scale_value.dart';
+import '../../utils/show_snack_bar.dart';
+import '../../utils/validators.dart';
 import '../../widgets/auth_app_logo.dart';
+import '../../widgets/auth_text_field.dart';
 import '../../widgets/verified_screen.dart';
+import '../loading_screen.dart';
 
 class RegisterAccountScreen extends StatelessWidget {
   const RegisterAccountScreen({super.key});
@@ -175,9 +176,12 @@ class _RegisterAccountScreenFormState extends State<RegisterAccountScreenForm> {
           child: ElevatedButton(
             onPressed: () async {
               FocusManager.instance.primaryFocus?.unfocus();
-              if (validEmail(emailController: _emailController)) {
-                if (validPassword(passwordController: _passwordController)) {
+              final String? isValidEmail = validEmail(emailController: _emailController);
+              if (isValidEmail == null) {
+                final String? isValidPassword = validPassword(passwordController: _passwordController);
+                if (isValidPassword == null) {
                   await provider.signInWithEmailAndPassword(
+                    context: context,
                       email: _emailController.text,
                       password: _passwordController.text);
                   if (provider.isRegistered) {
@@ -189,20 +193,10 @@ class _RegisterAccountScreenFormState extends State<RegisterAccountScreenForm> {
                         context, '/email_verification');
                   }
                 } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Please enter a valid password.'),
-                      backgroundColor: Color(0xFFEFA39F),
-                    ),
-                  );
+                  showSnackBar(context: context, errorMessage: isValidPassword);
                 }
               } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Please enter a valid email.'),
-                    backgroundColor: Color(0xFFEFA39F),
-                  ),
-                );
+                showSnackBar(context: context, errorMessage: isValidEmail);
               }
             },
             style: ElevatedButton.styleFrom(

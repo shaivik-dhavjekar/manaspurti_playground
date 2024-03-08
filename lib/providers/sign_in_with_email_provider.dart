@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:manaspurti_playground/services/firebase_auth.dart';
+
+import '../services/firebase_auth.dart';
+import '../utils/generate_exception_message.dart';
+import '../utils/show_snack_bar.dart';
 
 class SignInWithEmailProvider extends ChangeNotifier {
   final AuthService _authService = AuthService();
@@ -11,15 +14,23 @@ class SignInWithEmailProvider extends ChangeNotifier {
   bool get isLoading => _isLoading;
 
   Future<void> signInWithEmailAndPassword(
-      {required String email, required String password}) async {
+      {required BuildContext context, required String email, required String password}) async {
     _isLoading = true;
     notifyListeners();
-    final bool isSignedIn = await _authService.signInWithEmailAndPassword(
-        email: email, password: password);
-    if (isSignedIn) {
-      _isSignedIn = true;
+    try {
+      final bool isSignedIn = await _authService.signInWithEmailAndPassword(
+          email: email, password: password);
+      if (isSignedIn) {
+        _isSignedIn = true;
+        _isLoading = false;
+        notifyListeners();
+      }
+    } catch (e) {
       _isLoading = false;
       notifyListeners();
+      if (context.mounted) {
+        showSnackBar(context: context, errorMessage: generateExceptionMessage(e));
+      }
     }
   }
 }

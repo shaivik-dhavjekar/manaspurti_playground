@@ -2,15 +2,16 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:manaspurti_playground/providers/forgot_password_provider.dart';
-import 'package:manaspurti_playground/utils/validators.dart';
-import 'package:manaspurti_playground/widgets/auth_text_field.dart';
-import 'package:manaspurti_playground/screens/loading_screen.dart';
 import 'package:provider/provider.dart';
 
+import '../../providers/forgot_password_provider.dart';
 import '../../utils/get_scale_value.dart';
+import '../../utils/show_snack_bar.dart';
+import '../../utils/validators.dart';
 import '../../widgets/auth_app_logo.dart';
+import '../../widgets/auth_text_field.dart';
 import '../../widgets/verified_screen.dart';
+import '../loading_screen.dart';
 
 class ForgotPasswordScreen extends StatelessWidget {
   const ForgotPasswordScreen({super.key});
@@ -154,7 +155,8 @@ class _ForgotPasswordScreenFormState extends State<ForgotPasswordScreenForm> {
               child: ElevatedButton(
                 onPressed: () async {
                   FocusManager.instance.primaryFocus?.unfocus();
-                  if (validEmail(emailController: _emailController)) {
+                  final String? isValidEmail = validEmail(emailController: _emailController);
+                  if (isValidEmail == null) {
                     await provider.resetPassword(
                         email: _emailController.text);
                     if (provider.isResetEmailSent) {
@@ -165,12 +167,7 @@ class _ForgotPasswordScreenFormState extends State<ForgotPasswordScreenForm> {
                               const PasswordResetLinkSentScreen()));
                     }
                   } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Please enter a valid email.'),
-                        backgroundColor: Color(0xFFEFA39F),
-                      ),
-                    );
+                    showSnackBar(context: context, errorMessage: isValidEmail);
                   }
                 },
                 style: ElevatedButton.styleFrom(

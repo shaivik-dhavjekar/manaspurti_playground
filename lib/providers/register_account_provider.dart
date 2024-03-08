@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:manaspurti_playground/services/firebase_auth.dart';
 
+import '../utils/generate_exception_message.dart';
+import '../utils/show_snack_bar.dart';
+
 class RegisterAccountProvider extends ChangeNotifier {
   final AuthService _authService = AuthService();
 
@@ -11,14 +14,22 @@ class RegisterAccountProvider extends ChangeNotifier {
   bool get isLoading => _isLoading;
 
   Future<void> signInWithEmailAndPassword(
-      {required String email, required String password}) async {
+      {required BuildContext context, required String email, required String password}) async {
     _isLoading = true;
     notifyListeners();
-    final bool isRegistered = await _authService.signUpWithEmailAndPassword(email: email, password: password);
-    if (isRegistered) {
-      _isRegistered = true;
+    try {
+      final bool isRegistered = await _authService.signUpWithEmailAndPassword(email: email, password: password);
+      if (isRegistered) {
+        _isRegistered = true;
+        _isLoading = false;
+        notifyListeners();
+      }
+    } catch (e) {
       _isLoading = false;
       notifyListeners();
+      if (context.mounted) {
+        showSnackBar(context: context, errorMessage: generateExceptionMessage(e));
+      }
     }
   }
 

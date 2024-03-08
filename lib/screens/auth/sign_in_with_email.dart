@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:manaspurti_playground/providers/sign_in_with_email_provider.dart';
-import 'package:manaspurti_playground/screens/loading_screen.dart';
-import 'package:manaspurti_playground/utils/get_scale_value.dart';
-import 'package:manaspurti_playground/utils/validators.dart';
-import 'package:manaspurti_playground/widgets/auth_app_logo.dart';
-import 'package:manaspurti_playground/widgets/auth_text_field.dart';
 import 'package:provider/provider.dart';
+
+import '../../providers/sign_in_with_email_provider.dart';
+import '../../utils/get_scale_value.dart';
+import '../../utils/show_snack_bar.dart';
+import '../../utils/validators.dart';
+import '../../widgets/auth_app_logo.dart';
+import '../../widgets/auth_text_field.dart';
+import '../loading_screen.dart';
 
 class SignInWithEmailScreen extends StatelessWidget {
   const SignInWithEmailScreen({super.key});
@@ -50,7 +52,7 @@ class SignInWithEmailScreen extends StatelessWidget {
                           ],
                         ),
                       ),
-                      SignInWithEmailScreenForm()
+                      const SignInWithEmailScreenForm()
                     ],
                   )
                       : Row(
@@ -159,30 +161,23 @@ class _SignInWithEmailScreenFormState extends State<SignInWithEmailScreenForm> {
           child: ElevatedButton(
             onPressed: () async {
               FocusManager.instance.primaryFocus?.unfocus();
-              if (validEmail(emailController: _emailController)) {
-                if (validPassword(passwordController: _passwordController)) {
-                  await provider.signInWithEmailAndPassword(
-                      email: _emailController.text,
-                      password: _passwordController.text);
-                  if (provider.isSignedIn) {
-                    Navigator.pushNamedAndRemoveUntil(
-                        context, '/welcome', (Route<dynamic> route) => false);
-                  }
+              final String? isValidEmail = validEmail(emailController: _emailController);
+              if (isValidEmail == null) {
+                final String? isValidPassword = validPassword(passwordController: _passwordController);
+                if (isValidPassword == null) {
+                    await provider.signInWithEmailAndPassword(
+                      context: context,
+                        email: _emailController.text,
+                        password: _passwordController.text);
+                    if (provider.isSignedIn && context.mounted) {
+                      Navigator.pushNamedAndRemoveUntil(
+                          context, '/welcome', (Route<dynamic> route) => false);
+                    }
                 } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Please enter a valid password.'),
-                      backgroundColor: Color(0xFFEFA39F),
-                    ),
-                  );
+                  showSnackBar(context: context, errorMessage: isValidPassword);
                 }
               } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Please enter a valid email.'),
-                    backgroundColor: Color(0xFFEFA39F),
-                  ),
-                );
+                showSnackBar(context: context, errorMessage: isValidEmail);
               }
             },
             style: ElevatedButton.styleFrom(
@@ -202,7 +197,7 @@ class _SignInWithEmailScreenFormState extends State<SignInWithEmailScreenForm> {
           child: Text(
             'Forgot Password',
             style: TextStyle(
-                color: Color(0xFF909891),
+                color: const Color(0xFF909891),
                 fontSize: 14 * getScaleValue(context)),
           ),
         ),
@@ -214,7 +209,7 @@ class _SignInWithEmailScreenFormState extends State<SignInWithEmailScreenForm> {
           child: Text(
             'Don’t have an account? Register here.',
             style: TextStyle(
-                color: Color(0xFF909891),
+                color: const Color(0xFF909891),
                 fontSize: 14 * getScaleValue(context)),
           ),
         ),

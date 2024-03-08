@@ -24,13 +24,14 @@ class AuthService {
       await userCredential.user!.sendEmailVerification();
       return true;
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'weak-password') {
-        debugPrint('The password provided is too weak.');
-      } else if (e.code == 'email-already-in-use') {
-        debugPrint('The account already exists for that email.');
-      } else {
-        debugPrint(e.toString());
-      }
+      throw e.code;
+      // if (e.code == 'weak-password') {
+      //   debugPrint('The password provided is too weak.');
+      // } else if (e.code == 'email-already-in-use') {
+      //   debugPrint('The account already exists for that email.');
+      // } else {
+      //   debugPrint(e.toString());
+      // }
     }
     return false;
   }
@@ -70,13 +71,14 @@ class AuthService {
               email: email.trim(), password: password.trim());
       return true;
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        debugPrint('No user found for that email.');
-      } else if (e.code == 'wrong-password') {
-        debugPrint('Wrong password provided for that user.');
-      } else {
-        debugPrint(e.toString());
-      }
+      throw e.code;
+      // if (e.code == 'user-not-found') {
+      //   throw('No user found for that email.');
+      // } else if (e.code == 'wrong-password') {
+      //   debugPrint('Wrong password provided for that user.');
+      // } else {
+      //   debugPrint(e.toString());
+      // }
     }
     return false;
   }

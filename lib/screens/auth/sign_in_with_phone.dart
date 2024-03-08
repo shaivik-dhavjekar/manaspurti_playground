@@ -2,15 +2,16 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:manaspurti_playground/providers/sign_in_with_phone_provider.dart';
-import 'package:manaspurti_playground/screens/loading_screen.dart';
-import 'package:manaspurti_playground/utils/get_scale_value.dart';
-import 'package:manaspurti_playground/utils/validators.dart';
-import 'package:manaspurti_playground/widgets/auth_app_logo.dart';
-import 'package:manaspurti_playground/widgets/auth_text_field.dart';
 import 'package:provider/provider.dart';
 
+import '../../providers/sign_in_with_phone_provider.dart';
+import '../../utils/get_scale_value.dart';
+import '../../utils/show_snack_bar.dart';
+import '../../utils/validators.dart';
+import '../../widgets/auth_app_logo.dart';
+import '../../widgets/auth_text_field.dart';
 import '../../widgets/verified_screen.dart';
+import '../loading_screen.dart';
 
 class SignInWithPhoneScreen extends StatelessWidget {
   const SignInWithPhoneScreen({super.key});
@@ -110,17 +111,13 @@ class _SignInWithPhoneScreenFormState extends State<SignInWithPhoneScreenForm> {
                     child: ElevatedButton(
                       onPressed: () async {
                         FocusManager.instance.primaryFocus?.unfocus();
-                        if (validPhone(
-                            phoneController: _phoneNumberController)) {
+                        final String? isValidPhone = validPhone(
+                            phoneController: _phoneNumberController);
+                        if (isValidPhone == null) {
                           await provider.sendVerificationCode(context,
                               phoneNumber: _phoneNumberController.text);
                         } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Please enter a valid phone number.'),
-                              backgroundColor: Color(0xFFEFA39F),
-                            ),
-                          );
+                          showSnackBar(context: context, errorMessage: isValidPhone);
                         }
                       },
                       style: ElevatedButton.styleFrom(
@@ -157,8 +154,8 @@ class _SignInWithPhoneScreenFormState extends State<SignInWithPhoneScreenForm> {
                     child: ElevatedButton(
                       onPressed: () async {
                         FocusManager.instance.primaryFocus?.unfocus();
-                        if (validOTP(
-                            otpController: _otpController)) {
+                        final String? isValidOTP = validOTP(otpController: _otpController);
+                        if (isValidOTP == null) {
                           await provider.signInWithOTP(
                               otp: _otpController.text.toString());
                           if (provider.isVerified) {
@@ -169,14 +166,8 @@ class _SignInWithPhoneScreenFormState extends State<SignInWithPhoneScreenForm> {
                                     const MobileNumberVerifiedScreen()));
                           }
                         } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Please enter a valid OTP.'),
-                              backgroundColor: Color(0xFFEFA39F),
-                            ),
-                          );
+                          showSnackBar(context: context, errorMessage: isValidOTP);
                         }
-
                       },
                       style: ElevatedButton.styleFrom(
                         shape: RoundedRectangleBorder(

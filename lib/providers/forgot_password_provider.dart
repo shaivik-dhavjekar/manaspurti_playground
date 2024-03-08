@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:manaspurti_playground/services/firebase_auth.dart';
+
+import '../services/firebase_auth.dart';
 
 class ForgotPasswordProvider extends ChangeNotifier {
   final AuthService _authService = AuthService();
