@@ -26,9 +26,9 @@ class RegisterAccountScreen extends StatelessWidget {
             alignment: Alignment.center,
             children: [
               OrientationBuilder(builder: (context, orientation) {
-                if (orientation == Orientation.portrait) {
-                  return SingleChildScrollView(
-                    child: Column(
+                return SingleChildScrollView(
+                    child: orientation == Orientation.portrait
+                        ? Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
@@ -41,10 +41,12 @@ class RegisterAccountScreen extends StatelessWidget {
                             children: [
                               Text('Register Account',
                                   style: GoogleFonts.roboto(
-                                      fontSize: 16 * getScaleValue(context),
+                                      fontSize:
+                                      16 * getScaleValue(context),
                                       fontWeight: FontWeight.w500)),
                               Positioned(
-                                left: MediaQuery.of(context).size.width * 0.2,
+                                left: MediaQuery.of(context).size.width *
+                                    0.2,
                                 child: GestureDetector(
                                   onTap: () => Navigator.pop(context),
                                   child: const Icon(
@@ -58,27 +60,27 @@ class RegisterAccountScreen extends StatelessWidget {
                         ),
                         const RegisterAccountScreenForm()
                       ],
-                    ),
-                  );
-                } else {
-                  return Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      const AuthAppLogo(),
-                      SingleChildScrollView(
-                        child: Column(
+                    )
+                        : Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        const AuthAppLogo(),
+                        Column(
                           children: [
                             Stack(
                               alignment: Alignment.center,
                               children: [
                                 Text('Register Account',
                                     style: GoogleFonts.roboto(
-                                        fontSize: 16 * getScaleValue(context),
+                                        fontSize:
+                                        16 * getScaleValue(context),
                                         fontWeight: FontWeight.w500)),
                                 Padding(
                                   padding: EdgeInsets.only(
-                                      right: MediaQuery.of(context).size.width *
+                                      right: MediaQuery.of(context)
+                                          .size
+                                          .width *
                                           0.4),
                                   child: GestureDetector(
                                     onTap: () => Navigator.pop(context),
@@ -93,10 +95,8 @@ class RegisterAccountScreen extends StatelessWidget {
                             const RegisterAccountScreenForm(),
                           ],
                         ),
-                      ),
-                    ],
-                  );
-                }
+                      ],
+                    ));
               }),
               Consumer<RegisterAccountProvider>(
                 builder: (context, provider, child) {
@@ -222,7 +222,7 @@ class _RegisterAccountScreenFormState extends State<RegisterAccountScreenForm> {
           ),
         ),
         const SizedBox(
-          height: 25,
+          height: 20,
         ),
         GestureDetector(
           onTap: () => Navigator.pushNamedAndRemoveUntil(

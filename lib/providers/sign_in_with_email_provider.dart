@@ -25,11 +25,11 @@ class SignInWithEmailProvider extends ChangeNotifier {
         _isLoading = false;
         notifyListeners();
       }
-    } catch (e) {
+    } catch (err) {
       _isLoading = false;
       notifyListeners();
       if (context.mounted) {
-        showSnackBar(context: context, errorMessage: generateExceptionMessage(e));
+        showSnackBar(context: context, errorMessage: generateExceptionMessage(err));
       }
     }
   }

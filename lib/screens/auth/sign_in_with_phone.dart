@@ -114,7 +114,7 @@ class _SignInWithPhoneScreenFormState extends State<SignInWithPhoneScreenForm> {
                         final String? isValidPhone = validPhone(
                             phoneController: _phoneNumberController);
                         if (isValidPhone == null) {
-                          await provider.sendVerificationCode(context,
+                          await provider.sendVerificationCode(context: context,
                               phoneNumber: _phoneNumberController.text);
                         } else {
                           showSnackBar(context: context, errorMessage: isValidPhone);
@@ -156,7 +156,7 @@ class _SignInWithPhoneScreenFormState extends State<SignInWithPhoneScreenForm> {
                         FocusManager.instance.primaryFocus?.unfocus();
                         final String? isValidOTP = validOTP(otpController: _otpController);
                         if (isValidOTP == null) {
-                          await provider.signInWithOTP(
+                          await provider.signInWithOTP(context: context,
                               otp: _otpController.text.toString());
                           if (provider.isVerified) {
                             Navigator.pushReplacement(

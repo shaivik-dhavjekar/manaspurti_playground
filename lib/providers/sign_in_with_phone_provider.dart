@@ -1,6 +1,8 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:manaspurti_playground/services/firebase_auth.dart';
+
+import '../services/firebase_auth.dart';
+import '../utils/generate_exception_message.dart';
+import '../utils/show_snack_bar.dart';
 
 class SignInWithPhoneProvider extends ChangeNotifier {
   final AuthService _authService = AuthService();
@@ -17,45 +19,47 @@ class SignInWithPhoneProvider extends ChangeNotifier {
 
   void setVerificationId(String? verificationId) {
     _verificationId = verificationId;
-    _isVerificationSent=true;
-    _isLoading=false;
+    _isVerificationSent = true;
+    _isLoading = false;
     notifyListeners();
   }
 
-  Future<void> sendVerificationCode(BuildContext context, {required String phoneNumber}) async {
+  Future<void> sendVerificationCode({required BuildContext context, required String phoneNumber}) async {
     _isLoading=true;
     notifyListeners();
-    await _authService.verifyPhoneNumber(context, phoneNumber: phoneNumber);
-    return;
-  }
-
-  Future<void> signInWithOTP({required String otp}) async {
-    _isLoading=true;
-    notifyListeners();
-
-    final bool isVerified = await _authService.signInWithVerificationCode(verificationId: _verificationId!, verificationCode: otp);
-    if (isVerified) {
-      _isVerified = true;
+    try {
+      await _authService.verifyPhoneNumber(context, phoneNumber: phoneNumber);
+      return;
+    } catch (err) {
       _isLoading = false;
       notifyListeners();
+      if (context.mounted) {
+        showSnackBar(context: context, errorMessage: generateExceptionMessage(err));
+      }
     }
+  }
 
-    // try {
-    //   final PhoneAuthCredential credential = PhoneAuthProvider.credential(
-    //     verificationId: _verificationId!,
-    //     smsCode: verificationCode,
-    //   );
-    //   await _auth.signInWithCredential(credential);
-    //   _isVerificationSent=false;
-    //   _isLoading=false;
-    //   notifyListeners();
-    // } catch (e) {
-    //   debugPrint('Sign-in failed: $e');
-    // }
+  Future<void> signInWithOTP({required BuildContext context, required String otp}) async {
+    _isLoading=true;
+    notifyListeners();
+    try {
+      final bool isVerified = await _authService.signInWithVerificationCode(verificationId: _verificationId!, verificationCode: otp);
+      if (isVerified) {
+        _isVerified = true;
+        _isLoading = false;
+        notifyListeners();
+      }
+    } catch (err) {
+      _isLoading = false;
+      notifyListeners();
+      if (context.mounted) {
+        showSnackBar(context: context, errorMessage: generateExceptionMessage(err));
+      }
+    }
   }
 
   Future<void> cancelOTPVerification() async {
-    _isVerificationSent=false;
+    _isVerificationSent = false;
     notifyListeners();
   }
 }

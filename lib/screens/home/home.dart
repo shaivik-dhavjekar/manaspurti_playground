@@ -212,7 +212,7 @@ class DrawerMenu extends StatelessWidget {
                     screenTitle: 'Logout',
                     screenIcon: Icons.power_settings_new_outlined,
                     onTap: () async {
-                      await provider.signOut();
+                      await provider.signOut(context: context);
                       if (provider.isSignedOut) {
                         Navigator.pushNamedAndRemoveUntil(
                             context,
@@ -272,7 +272,7 @@ class AppMenu extends StatelessWidget {
                 screenTitle: 'Logout',
                 screenIcon: Icons.power_settings_new_outlined,
                 onTap: () async {
-                  await provider.signOut();
+                  await provider.signOut(context: context);
                   if (provider.isSignedOut) {
                     Navigator.pushNamedAndRemoveUntil(context,
                         '/sign_in_with_phone', (Route<dynamic> route) => false);

@@ -158,6 +158,7 @@ class _ForgotPasswordScreenFormState extends State<ForgotPasswordScreenForm> {
                   final String? isValidEmail = validEmail(emailController: _emailController);
                   if (isValidEmail == null) {
                     await provider.resetPassword(
+                      context: context,
                         email: _emailController.text);
                     if (provider.isResetEmailSent) {
                       Navigator.pushReplacement(

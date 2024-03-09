@@ -99,8 +99,9 @@ class AuthService {
         },
         codeAutoRetrievalTimeout: (String verificationId) {},
       );
-    } catch (e) {
-      debugPrint('Verification code could not be sent : $e');
+    } on FirebaseAuthException catch (e) {
+      throw e.code;
+      // debugPrint('Verification code could not be sent : $e');
     }
   }
 
@@ -113,7 +114,7 @@ class AuthService {
       await _firebaseAuth.signInWithCredential(credential);
       return true;
     } on FirebaseAuthException catch (e) {
-      debugPrint(e.message.toString());
+      throw e.code;
     } catch (e) {
       debugPrint(e.toString());
     }
@@ -125,9 +126,7 @@ class AuthService {
       await _firebaseAuth.sendPasswordResetEmail(email: email.trim());
       return true;
     } on FirebaseAuthException catch (e) {
-      debugPrint(e.message.toString());
-    } catch (e) {
-      debugPrint(e.toString());
+      throw e.code;
     }
     return false;
   }
@@ -139,9 +138,8 @@ class AuthService {
         await _firebaseAuth.signOut();
         return true;
       }
-    } catch (e) {
-      debugPrint(e.toString());
-
+    } on FirebaseAuthException catch (e) {
+      throw e.code;
     }
     return false;
   }

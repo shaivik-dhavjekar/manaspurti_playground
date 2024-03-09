@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:manaspurti_playground/services/firebase_auth.dart';
 
+import '../services/firebase_auth.dart';
 import '../utils/generate_exception_message.dart';
 import '../utils/show_snack_bar.dart';
 
@@ -24,11 +24,11 @@ class RegisterAccountProvider extends ChangeNotifier {
         _isLoading = false;
         notifyListeners();
       }
-    } catch (e) {
+    } catch (err) {
       _isLoading = false;
       notifyListeners();
       if (context.mounted) {
-        showSnackBar(context: context, errorMessage: generateExceptionMessage(e));
+        showSnackBar(context: context, errorMessage: generateExceptionMessage(err));
       }
     }
   }

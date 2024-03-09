@@ -1,23 +1,20 @@
-import 'package:firebase_auth/firebase_auth.dart' hide EmailAuthProvider, PhoneAuthProvider;
-// import 'package:firebase_ui_auth/firebase_ui_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:manaspurti_playground/providers/forgot_password_provider.dart';
-import 'package:manaspurti_playground/providers/register_account_provider.dart';
-import 'package:manaspurti_playground/providers/sign_in_with_email_provider.dart';
-import 'package:manaspurti_playground/providers/sign_in_with_phone_provider.dart';
-import 'package:manaspurti_playground/providers/sign_out_provider.dart';
-import 'package:manaspurti_playground/screens/auth/forgot_password.dart';
-import 'package:manaspurti_playground/screens/home/home.dart';
-import 'package:manaspurti_playground/screens/auth/register_account.dart';
-import 'package:manaspurti_playground/screens/auth/sign_in_with_email.dart';
-import 'package:manaspurti_playground/screens/auth/sign_in_with_phone.dart';
-import 'package:manaspurti_playground/screens/splash.dart';
-import 'package:manaspurti_playground/screens/welcome.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
+import 'providers/forgot_password_provider.dart';
+import 'providers/register_account_provider.dart';
+import 'providers/sign_in_with_email_provider.dart';
+import 'providers/sign_in_with_phone_provider.dart';
+import 'providers/sign_out_provider.dart';
+import 'screens/auth/forgot_password.dart';
+import 'screens/auth/register_account.dart';
+import 'screens/auth/sign_in_with_email.dart';
+import 'screens/auth/sign_in_with_phone.dart';
+import 'screens/home/home.dart';
+import 'screens/splash.dart';
+import 'screens/welcome.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -47,6 +44,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
+        scaffoldBackgroundColor: const Color(0xFFFEF7FF),
         textTheme: GoogleFonts.cabinTextTheme(),
         // inputDecorationTheme: InputDecorationTheme(
         //   filled: true,
@@ -83,29 +81,4 @@ class MyApp extends StatelessWidget {
   }
 }
 
-/*
-class AuthScreen extends StatelessWidget {
-  const AuthScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return StreamBuilder<User?>(
-      stream: FirebaseAuth.instance.authStateChanges(),
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) {
-          return const SignInWithPhoneScreen();
-          // return SignInScreen(
-          //   providers: [
-          //     EmailAuthProvider(),
-          //     PhoneAuthProvider()
-          //   ],
-          // );
-        }
-
-        return const Home();
-        },
-      );
-  }
-}
-*/
 
