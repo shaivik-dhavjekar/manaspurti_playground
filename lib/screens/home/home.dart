@@ -1,4 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:manaspurti_playground/providers/sign_out_provider.dart';
 import 'package:manaspurti_playground/screens/home/about.dart';
 import 'package:manaspurti_playground/screens/home/feedback.dart';
@@ -180,16 +183,15 @@ class DrawerMenu extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 10.0),
             child: ListView(
               children: [
-                DrawerListTile(
-                    screenTitle: 'Profile',
-                    screenIcon: Icons.account_circle_outlined,
-                    onTap: () {
-                      Navigator.pop(context);
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => ProfileScreen()));
-                    }),
+                GestureDetector(child: DrawerProfileTab(),
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => ProfileScreen()));
+                },
+                ),
                 DrawerListTile(
                     screenTitle: 'Home',
                     screenIcon: Icons.home_outlined,
@@ -254,10 +256,10 @@ class AppMenu extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 10.0),
         child: ListView(
           children: [
-            DrawerListTile(
-                screenTitle: 'Profile',
-                screenIcon: Icons.account_circle_outlined,
-                onTap: () {}),
+            GestureDetector(
+              child: DrawerProfileTab(),
+              onTap: () {},
+            ),
             DrawerListTile(
                 screenTitle: 'Home',
                 screenIcon: Icons.home_outlined,
@@ -300,16 +302,69 @@ class DrawerListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(screenIcon),
-          const SizedBox(width: 10),
-          Text(screenTitle),
-        ],
+      title: Text(screenTitle, style: GoogleFonts.rubik(fontSize: 16, fontWeight: FontWeight.w400),),
+      leading: Icon(screenIcon, size: 24,),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(24.0),
       ),
       onTap: onTap,
+    );
+  }
+}
+
+class DrawerProfileTab extends StatelessWidget {
+  final User? _user = FirebaseAuth.instance.currentUser;
+  DrawerProfileTab({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    return Container(
+      color: Colors.white.withOpacity(0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Align(
+            alignment: Alignment.topLeft,
+            child: _user?.photoURL != null
+                ? CircleAvatar(
+              backgroundImage: NetworkImage(_user!.photoURL!),
+              radius: 25,
+            )
+                : _user?.displayName != null
+                ? Container(
+              alignment: Alignment.center,
+              width: 50,
+              height: 50,
+              decoration: const BoxDecoration(
+                color:
+                Color(0xFF866FB9),
+                shape: BoxShape.circle,
+              ),
+              child: Text(_user!.displayName![0].toUpperCase(), style: GoogleFonts.rubik(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 24)),
+            )
+                : const Icon(
+              Icons.account_circle,
+              size: 50,
+              color: Color(0xFF6A736B),
+            ),
+          ),
+          SizedBox(height: 10),
+          Text(
+            _user?.displayName ?? "No display name",
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+          ),
+          Text(
+            _user?.email ??
+                (_user?.phoneNumber != null
+                    ? _user!.phoneNumber!
+                    : "No phone number"),
+            style: GoogleFonts.rubik(color: Color(0xFF909090), fontSize: 12, fontWeight: FontWeight.w400),
+          ),
+          SizedBox(height: 15),
+        ],
+      ),
     );
   }
 }

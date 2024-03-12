@@ -1,10 +1,53 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../../providers/theme_provider.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
 
+  void showThemeMenu(BuildContext context, ThemeProvider themeProvider) {
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Select Theme'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min, // Constrain content size
+            children: [
+              TextButton(
+                onPressed: () {
+                  themeProvider.setThemeMode(ThemeMode.light);
+                  Navigator.pop(context);
+                },
+                child: Text('Light'),
+              ),
+              TextButton(
+                onPressed: () {
+                  themeProvider.setThemeMode(ThemeMode.dark);
+                  Navigator.pop(context);
+                },
+                child: Text('Dark'),
+              ),
+              TextButton(
+                onPressed: () {
+                  themeProvider.setThemeMode(ThemeMode.system);
+                  Navigator.pop(context);
+                },
+                child: Text('System'),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Settings'),
@@ -19,11 +62,36 @@ class SettingsScreen extends StatelessWidget {
                 title: 'Customization',
                 content: Column(
                   children: [
-                    Container(
-                      width: MediaQuery.of(context).size.width*0.93,
-                      alignment: Alignment.centerLeft,
-                      child: const SettingsTextWidget(
-                          title: 'App Theme', subtitle: 'Light'),
+                    // DropdownButton<ThemeMode>(
+                    //   value: themeProvider.themeMode,
+                    //   items: [
+                    //     DropdownMenuItem(
+                    //       value: ThemeMode.light,
+                    //       child: Text('Light'),
+                    //     ),
+                    //     DropdownMenuItem(
+                    //       value: ThemeMode.dark,
+                    //       child: Text('Dark'),
+                    //     ),
+                    //     DropdownMenuItem(
+                    //       value: ThemeMode.system,
+                    //       child: Text('System'),
+                    //     ),
+                    //   ],
+                    //   onChanged: (themeMode) {
+                    //     themeProvider.setThemeMode(themeMode!);
+                    //   },
+                    // ),
+                    GestureDetector(
+                      // onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => SetAppTheme())),
+                      onTap: () => showThemeMenu(context, themeProvider),
+                      child: Container(
+                        width: MediaQuery.of(context).size.width*0.93,
+                        color: Colors.white.withOpacity(0),
+                        alignment: Alignment.centerLeft,
+                        child: SettingsTextWidget(
+                            title: 'App Theme', subtitle: themeProvider.getAppTheme()),
+                      ),
                     ),
                     const SizedBox(height: 10),
                     Container(
@@ -221,7 +289,7 @@ class SettingsListTile extends StatelessWidget {
           children: [
             Row(
               children: [
-                Icon(icon, color: Theme.of(context).primaryColor),
+                Icon(icon, color: Theme.of(context).colorScheme.secondary),
                 const SizedBox(width: 25),
                 Text(
                   title,
@@ -232,6 +300,53 @@ class SettingsListTile extends StatelessWidget {
             const SizedBox(height: 15),
             content
           ],
+        ),
+      ),
+    );
+  }
+}
+
+
+class SetAppTheme extends StatelessWidget {
+  const SetAppTheme({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    return SafeArea(
+      child: Container(
+        color: Colors.black.withOpacity(0.7),
+        width: double.infinity,
+        height: double.infinity,
+        child: Center(
+          child: Card(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextButton(
+                  onPressed: () {
+                    themeProvider.setThemeMode(ThemeMode.light);
+                    Navigator.pop(context);
+                  },
+                  child: Text('Light'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    themeProvider.setThemeMode(ThemeMode.dark);
+                    Navigator.pop(context);
+                  },
+                  child: Text('Dark'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    themeProvider.setThemeMode(ThemeMode.system);
+                    Navigator.pop(context);
+                  },
+                  child: Text('System'),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );
